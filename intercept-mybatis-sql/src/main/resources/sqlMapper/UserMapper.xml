@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lyh.itms.dao.UserDao">
+
+	<resultMap id="BaseResultMap" type="com.lyh.itms.domain.User">
+		<result column="id" property="id" />
+		<result column="name" property="name" />
+		<result column="sex" property="sex" />
+		<result column="age" property="age" />
+		<result column="tel" property="tel" />
+		<result column="addr" property="addr" />
+		<result column="dsc" property="dsc" />
+		<result column="create_time" property="createTime" />
+	</resultMap>
+
+	<!-- 表的列 -->
+	<sql id="columns">
+		id,
+		name,
+		sex,
+		age,
+		tel,
+		addr,
+		dsc,
+		create_time
+	</sql>
+
+	<!-- 插入 -->
+	<insert id="insert" parameterType="User">
+		INSERT INTO user_info (
+		<include refid="columns" />
+		)
+		VALUES
+		(
+		#{id},
+		#{name},
+		#{sex},
+		#{age},
+		#{tel},
+		#{addr},
+		#{dsc},
+		#{createTime}
+		)
+	</insert>
+
+	<!-- 删除 -->
+	<delete id="delete" parameterType="User">
+		delete from user_info where
+		id = #{id}
+	</delete>
+
+	<!-- 更新 -->
+	<update id="update" parameterType="User">
+		update user_info set
+		name =
+		#{name},
+		sex = #{sex},
+		age = #{age},
+		tel = #{tel},
+		addr = #{addr},
+		dsc =
+		#{dsc}
+	</update>
+
+	<!-- 查询 -->
+	<select id="selectById" parameterType="User" resultMap="BaseResultMap">
+		select
+		<include refid="columns" />
+		from user_info
+		where id = #{id}
+	</select>
+
+	<!-- 分页条件 -->
+	<sql id="conditions">
+		where 1=1
+		<if test="startTime != null">
+			and create_time &gt;= #{startTime}
+		</if>
+		<if test="endTime != null">
+			and create_time &lt;= #{endTime}
+		</if>
+	</sql>
+
+	<!-- 统计分页条数 -->
+	<select id="countUser" parameterType="java.util.Map" resultType="java.lang.Integer">
+		select count(1) from user_info
+		<include refid="conditions" />
+	</select>
+
+	<!-- 分页查询 -->
+	<select id="listPageUser" parameterType="java.util.Map"
+		resultMap="BaseResultMap">
+		select
+		<include refid="columns" />
+		from user_info
+		<include refid="conditions" />
+		order by create_time desc
+		<if test="rowIndex != null and pageSize != null">
+			limit #{rowIndex},#{pageSize}
+		</if>
+	</select>
+
+</mapper>
