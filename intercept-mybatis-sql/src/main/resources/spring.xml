@@ -22,6 +22,13 @@
 
 	<context:property-placeholder location="classpath*:*.properties" />
 	
+	<!-- MyBatis 分页拦截器-->  
+    <bean id="paginationInterceptor" class="com.lyh.itms.interceptor.PageInterceptor">  
+        <property name="dialect" value="mysql"/>   
+        <!-- 拦截Mapper.xml文件中，id包含query字符的语句 -->   
+        <property name="pageSqlId" value="*insert"/>  
+    </bean> 
+	
 	<!-- 数据源配置  -->
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
@@ -32,9 +39,10 @@
 	</bean>
 
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-		<property name="dataSource" ref="dataSource" />
-		<property name="configLocation" value="classpath:spring-mybatis.xml" />
-		<property name="mapperLocations" value="classpath*:sqlMapper/*.xml" />
+		<property name="dataSource" ref="dataSource" /><!-- (必需) spring中数据源引用 -->
+		<!-- <property name="configLocation" value="classpath:spring-mybatis.xml" /> --><!-- (可选) Mybatis自身的配置文件，用来对mybatis进行配置，可添加别名，映射文件等。 -->
+		<property name="mapperLocations" value="classpath*:sqlMapper/*.xml" /><!-- mybatis的映射文件 -->
+		<property name="typeAliasesPackage" value="com.lyh.itms.domain,com.lyh.itms"/> <!-- (可选) 要映射类的包路径，多个用逗号隔开，如果使用了这种方式，则configLocation中不必再进行声明 -->
 	</bean>
 
 	<!-- scan for mappers and let them be autowired -->
@@ -42,11 +50,4 @@
 		<property name="basePackage" value="com.lyh.itms.dao" />
 	</bean>
 	
-	
-	<!-- MyBatis 分页拦截器-->  
-    <bean id="paginationInterceptor" class="com.lyh.itms.interceptor.PageInterceptor">  
-        <property name="dialect" value="mysql"/>   
-        <!-- 拦截Mapper.xml文件中，id包含query字符的语句 -->   
-        <property name="pageSqlId" value=".*insert$"/>  
-    </bean>   
 </beans>
