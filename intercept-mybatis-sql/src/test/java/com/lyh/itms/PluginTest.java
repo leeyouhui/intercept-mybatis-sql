@@ -31,7 +31,8 @@ class MyMapPlugin implements Interceptor{
 	}
 
 	public Object plugin(Object target) {
-		return Plugin.wrap(target, this);
+//		return Plugin.wrap(target, this);
+		return null;
 	}
 
 	public void setProperties(Properties properties) {
